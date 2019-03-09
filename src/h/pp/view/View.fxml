@@ -48,6 +48,13 @@
               </children>
             </HBox>
             <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="62.0" />
+            <ComboBox fx:id="paramBox" layoutX="95.0" layoutY="69.0" prefHeight="22.0001220703125" prefWidth="200.0">
+              <items>
+                <FXCollections fx:factory="observableArrayList" />
+              </items>
+            </ComboBox>
+            <Button fx:id="buttonShow" layoutX="306.0" layoutY="71.0" mnemonicParsing="false" onAction="#handleShow_Param" prefWidth="92.0" text="Show" />
+            <Label layoutX="35.0" layoutY="74.0" text="Parametr:" />
           </children>
         </AnchorPane>
       </items>

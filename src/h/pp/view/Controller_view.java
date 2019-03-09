@@ -58,17 +58,19 @@ public class Controller_view {
 	@FXML
     public Button buttonStop;
 	@FXML
+    public Button buttonShow;
+	@FXML
     private TextField FilePath;
 	@FXML
     private static TextField COM;
 	@FXML
     public TextField Bytes_field;
-	public String[] portNames;
 	@FXML
     private ComboBox <String> portBox;
+	@FXML
+	private ComboBox <String> paramBox;
 	NumberAxis x = new NumberAxis();
 	NumberAxis y = new NumberAxis();
-	//ObservableList datas = FXCollections.observableArrayList();
 	@FXML
 	ScatterChart<Number,Number> scatterChart = new ScatterChart<>(x,y);
 	XYChart.Series s_ax = new XYChart.Series();//ax
@@ -88,9 +90,12 @@ public class Controller_view {
     private void initialize() {
     	FilePath.setText(getPersonFilePath().getAbsolutePath());
     	String[] portNames = SerialPortList.getPortNames();
-    	portBox.getItems().setAll(portNames);
-    } 
-    
+    	String[] paramNames = {"Ax","Ay","Az","Mx","My","Mz","Gx","Gy","Gz"};
+    	paramBox.getItems().setAll(paramNames);
+    	paramBox.getSelectionModel().selectFirst();
+    	portBox.getItems().setAll(portNames); 	
+    	buttonShow.setDisable(true);
+    }
     /**
      * Вызывается главным приложением, которое даёт на себя ссылку.
      * 
@@ -138,6 +143,17 @@ public class Controller_view {
     private void handleRefind() {
 		String[] portNames = SerialPortList.getPortNames();
 		portBox.getItems().setAll(portNames);
+    }
+    @FXML
+    private void handleShow_Param() {
+		//paramBox.getItems().setAll();
+		String a = paramBox.getValue();
+		switch (a) {
+			case ("Ax"):{
+				System.out.println("Ax");
+			}
+		}
+		
     }
     /**
      *	just disconnect opened com-port and after that 
@@ -192,7 +208,8 @@ public class Controller_view {
 	@SuppressWarnings("unchecked")
 	public void connect(){
 		serialPort = new SerialPort (portBox.getValue()); /*Передаем в конструктор суперкласса имя порта с которым будем работать*/
-	    try {
+		buttonShow.setDisable(false);
+		try {
 	        serialPort.openPort (); /*Метод открытия порта*/
 	        serialPort.setParams (SerialPort.BAUDRATE_256000, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE); /*Задаем основные параметры протокола UART*/
 	        serialPort.setEventsMask (SerialPort.MASK_RXCHAR); /*Устанавливаем маску или список события на которые будет происходить реакция. В данном случае это приход данных в буффер порта*/
@@ -218,7 +235,7 @@ public class Controller_view {
 	}
 	int count1 = 0;
 	/**
-     * Listener for listen COM-port with treatment data packet 
+     * Listener for listen COM-port with treatment data packet ( in future will be in new class)
      * 
      */
 public class EventListener implements SerialPortEventListener {
@@ -274,9 +291,10 @@ public class EventListener implements SerialPortEventListener {
 		Path fileLocation = Paths.get(FilePath.getText());
 		try {
 			byte[] data = Files.readAllBytes(fileLocation);
-			while(data.length > 0) {
-				//byte[] data64 =  Arrays.copyOf(arg0, arg1);
-			}
+			//while(data.length > 0) {
+				byte[] data64 =  Arrays.copyOfRange(data,0, 64);
+				System.out.println();
+				//}
 			/* byte[] buff = new byte[4];
              //System.out.println(data.length);
              for(int i = 0; i < 4; i++) {
@@ -363,7 +381,7 @@ public void clear_file() {
 		@Override
 		public void run()	//Этот метод будет выполнен в побочном потоке
 		{
-			System.out.println("Если вы это видите, значит что-то идет не так");
+			System.out.println("");
 		}
 	}
 	/*public int convertirOctetEnEntier(byte[] b){    
